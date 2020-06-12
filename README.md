@@ -1,5 +1,5 @@
 # NC-Talk Signaling with Docker
-Instructions on how to use the [Nextcloud-Talk Signaling Backend](https://github.com/strukturag/nextcloud-spreed-signaling) with 3 docker containers for Janus, Nats, and Coturn  
+Instructions on how to use the [Nextcloud-Talk Signaling Backend](https://github.com/strukturag/nextcloud-spreed-signaling) with 3 docker containers for Janus, Nats, and Coturn. Note almost all the files are from the Strukturag's "Nextcloud-Spreed-Signaling" Server I just modified a couple of things and added simpler installation instructions for myself.
 
 ## Create Signalling Server
 
