@@ -2,32 +2,54 @@
 version: '3'
 
 services:
-  spreedbackend:
-    build: .
-    volumes:
-      - ./server.conf:/config/server.conf
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - nats
-      - janus
-      - coturn
+  # spreedbackend:
+  #   build: .
+  #   volumes:
+  #     - ./server.conf:/config/server.conf
+  #   network_mode: host
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - nats
+  #     - janus
+  #     - coturn
+
+
+  # Add the nats://localhost:4222 URL to your server.conf file under [nats]
   nats:
     image: nats:2.1
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+      - "6222:6222"
     volumes:
       - ./gnatsd.conf:/config/gnatsd.conf
     command: ["-c", "/config/gnatsd.conf"]
     network_mode: host
     restart: unless-stopped
+
+# Add the ws://localhost:8188 URL to your server.conf file under [mcu]
   janus:
-    build: docker/janus
+    build: janus
+    ports:
+      - "8188:8188"
+      - "8088:8088"
+      - "8089:8089"
+      - "7088:7088"
+      - "10000-10200:10000-10200/udp"
+      - "3000:3000"
     command: ["janus"]
     network_mode: host
     restart: unless-stopped
+
+
+# Add the turn:localhost:3478?transport=udp,turn:localhost:3478?transport=tcp URL's to your server.conf file under [turn]
   coturn:
-    build: docker/coturn
+    build: coturn
+    ports:
+      - "3478:3478"
+      - "49160-49200:49160-49200/udp"
     network_mode: host
     environment:
-      REALM: nextcloud.domain.invalid
-      STATIC_SECRET: static_secret_same_in_server_conf
+      REALM: benjamin-forg.ddns.net # Make Sure to change this to your nextcloud instance!!
+      STATIC_SECRET: static_secret_same_in_server_conf # Make sure this is the same as in the server.conf file under [backend]!!
     restart: unless-stopped
