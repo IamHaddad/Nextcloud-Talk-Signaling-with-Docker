@@ -1,19 +1,5 @@
 
 version: '3'
-
-services:
-  # spreedbackend:
-  #   build: .
-  #   volumes:
-  #     - ./server.conf:/config/server.conf
-  #   network_mode: host
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - nats
-  #     - janus
-  #     - coturn
-
-
   # Add the nats://localhost:4222 URL to your server.conf file under [nats]
   nats:
     image: nats:2.1
@@ -50,6 +36,6 @@ services:
       - "49160-49200:49160-49200/udp"
     network_mode: host
     environment:
-      REALM: benjamin-forg.ddns.net # Make Sure to change this to your nextcloud instance!!
+      REALM: --domain-name-- # Make Sure to change this to the domain of your nextcloud instance!!
       STATIC_SECRET: 6d1c17a7-c736-4e22-b02c-e2955b7ecc64 # Make sure this is the same as in the server.conf file under [backend]!!
     restart: unless-stopped
