@@ -13,7 +13,9 @@ Download The [Signalling Server](https://github.com/strukturag/nextcloud-spreed-
 
 ### Configuration
 
-There is a default configuration file included called `server.conf.in` copy and rename this to `server.conf` and adjust the following for installing with the [docker-compose.yml](docker-compose.yml) as is,
+#### server.conf:
+
+Change the following in your `server.conf` to use the included [docker-compose.yml](docker-compose.yml) for setting up the Signaling server.
 
 Uncomment ```listen = 127.0.0.1:8080``` under `[http]` this is the port the signaling server will be listening on.
 
@@ -23,19 +25,23 @@ Uncomment ```url = nats://localhost:4222``` under `[nats]` the signaling server 
 
 Add `ws://localhost:8188` after `url = ` under `[mcu]` the signaling server will use this to connect to the Janus server in the docker container.
 
-Create a random string for the apikey which the Signaling server will use for the turn server `apikey = the-api-key-for-the-rest-service`.
+Create a random string for the apikey which the Signaling server will use for the turn server under `[turn]` `apikey = the-api-key-for-the-rest-service`.
 
-Also add a secret which the Signaling server will use to connect to the turn server (This needs to be the same as in the [docker-compose.yml](docker-compose.yml) file for coturn) `apikey = the-api-key-for-the-rest-service`.
+Also add a secret under `[turn]` the Signaling server will use this to connect to the turn server (This needs to be the same as in the [docker-compose.yml](docker-compose.yml) file for coturn) `secret = 6d1c17a7-c736-4e22-b02c-e2955b7ecc64`.
 
 And add a list of turnservers after the `servers =` ```turn:localhost:3478?transport=udp,turn:localhost:3478?transport=tcp``` this is used to connect to the Coturn server in the docker container.
 
-You also need to change the `REALM:` in the [docker-compose.yml](docker-compose.yml) to the domain name of your nextcloud instance.
+#### docker-compose.yml:
+
+Change the following in your docker-compose.yml from this repo.
+
+Change the `REALM:` in the [docker-compose.yml](docker-compose.yml) to the domain name of your nextcloud instance.
 
 And make sure the `STATIC_SECRET:` in the [docker-compose.yml](docker-compose.yml) is the same as the `secret` in the `server.conf` file.
 
 ### Docker Compose
 
-Then to deploy the Janus Nats and Coturn servers run:
+Then to deploy the Janus, Nats, and Coturn servers run:
 
 ```bash
 docker-compose build
@@ -88,7 +94,7 @@ systemctl start signaling.service
 ### Apache
 
 To configure the Apache webservice as frontend for the standalone signaling
-server, the modules `mod_proxy_http` and `mod_proxy_wstunnel` must be enabled
+server, the modules `mod_proxy_http`, `mod_redirect`, and `mod_proxy_wstunnel` must be enabled
 so WebSocket and API backend requests can be proxied:
 
     $ sudo a2enmod proxy
@@ -125,7 +131,7 @@ Login to your Nextcloud as admin and open the additional settings page. Scroll
 down to the "Talk" section and enter the base URL of your standalone signaling
 server in the field "External signaling server".
 Please note that you have to use `https` if your Nextcloud is also running on
-`https`. Usually you should enter `https://myhostname/standalone-signaling` as
+`https`. Usually you should enter `https://myhostname.com/standalone-signaling` as
 URL.
 
 The value "Shared secret for external signaling server" must be the same as the
