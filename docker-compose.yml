@@ -1,5 +1,5 @@
-
 version: '3'
+services:
   # Add the nats://localhost:4222 URL to your server.conf file under [nats]
   nats:
     image: nats:2.1
